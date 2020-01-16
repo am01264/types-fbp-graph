@@ -94,7 +94,7 @@ declare module "fbp-graph" {
 
         type Metadata = Object
 
-        export function createGraph(name : string, options : Graph.ConstructorOptions) : void;
+        export function createGraph(name : string, options : Graph.ConstructorOptions) : Graph;
         export function loadJSON(definition : string | Object, callback : Callback<Graph>, metadata : Metadata) : void;
         export function loadFBP(fbpData : string, callback : Callback<Graph>, metadata : Metadata, caseSensitive : boolean) : void;
         
@@ -104,5 +104,7 @@ declare module "fbp-graph" {
         export function equivalent(a : any, b : any, options : Object) : boolean;
         export function mergeResolveTheirsNaive(base : Graph, to : Graph) : Graph;
     }
+
+    export {graph as Graph}
 
 }
