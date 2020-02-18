@@ -1,4 +1,4 @@
-declare module "fbp-graph/graph" {
+declare module "fbp-graph/lib/graph" {
 
     import {EventEmitter} from "events";
     import {Component} from "noflo";

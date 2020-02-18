@@ -1,7 +1,7 @@
-declare module "fbp-graph/journal" {
+declare module "fbp-graph/lib/journal" {
     
     import { EventEmitter } from "events";
-    import { Graph } from "fbp-graph/graph"
+    import { Graph } from "fbp-graph/lib/graph"
 
     type Callback<T> = (err : Error | null, result : T) => void;
 
