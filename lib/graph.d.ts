@@ -74,7 +74,7 @@ declare module "fbp-graph/lib/graph" {
         on( event : 'addNode', listener : (node : Graph.Node) => void) : this;
         on( event : 'removeNode', listener: (node : Graph.Node) => void) : this;
         on( event : 'renameNode', listener: (oldId : string, newId : string) => void) : this;
-        on( event : 'changeNode', listener: (node : Graph.Node, oldMeta : ObjectMap) => void) : this;
+        on( event : 'changeNode', listener: (node : Graph.Node, oldMeta : Graph.NodeMetadata) => void) : this;
         
         on( event : 'addEdge', listener: (edge : Graph.Edge) => void) : this;
         on( event : 'removeEdge', listener: (edge : Graph.Edge) => void) : this;
@@ -83,7 +83,7 @@ declare module "fbp-graph/lib/graph" {
         on( event : 'addInitial', listener: (iip : Graph.Initializer) => void) : this;
         on( event : 'removeInitial', listener: (iip : Graph.Initializer) => void) : this;
         
-        on( event : 'changeProperties', listener: (newProps : ObjectMap, oldProps : ObjectMap) => void) : this;
+        on( event : 'changeProperties', listener: (newProps : Graph.PropertyMap, oldProps : Graph.PropertyMap) => void) : this;
         
         on( event : 'addGroup', listener: (group : Graph.Group) => void) : this;
         on( event : 'renameGroup', listener: (oldName : string, newName : string) => void) : this;
@@ -118,7 +118,7 @@ declare module "fbp-graph/lib/graph" {
         type PropertyMap = { [key : string] : any };
 
         type PortID = string;
-        type PortMetadata = ObjectMap;
+        type PortMetadata = { [key : string] : any };
         interface Port {
             process : Component;
             port: PortID;
@@ -126,14 +126,14 @@ declare module "fbp-graph/lib/graph" {
         }
 
         type NodeID = string;
-        type NodeMetadata = ObjectMap;
+        type NodeMetadata = { [key : string] : any };
         interface Node {
             id : NodeID;
             component : Component;
             metadata : NodeMetadata;
         }
 
-        type EdgeMetadata = ObjectMap;
+        type EdgeMetadata = { [key : string] : any };
         interface Edge {
             from: {
                 node: Node;
@@ -165,7 +165,7 @@ declare module "fbp-graph/lib/graph" {
             metadata : PortMetadata
         }
     
-        type GroupMetadata = ObjectMap;
+        type GroupMetadata = { [key : string] : any };
         interface Group {
             // TODO: Rename to something more appropriate
             name : string,
@@ -175,19 +175,14 @@ declare module "fbp-graph/lib/graph" {
     }
 
 
-    interface ObjectMap { 
-        // TODO: Remove all uses of this type with stricter equivalents
-        [key : string] : any 
-    }
-
     export function createGraph(name : string, options : Graph.ConstructorOptions) : Graph;
-    export function loadJSON(definition : string | Object, callback : Callback<Graph>, metadata : ObjectMap) : void;
-    export function loadFBP(fbpData : string, callback : Callback<Graph>, metadata : ObjectMap, caseSensitive : boolean) : void;
+    export function loadJSON(definition : string | Object, callback : Callback<Graph>, metadata : { [key : string] : any }) : void;
+    export function loadFBP(fbpData : string, callback : Callback<Graph>, metadata : { [key : string] : any }, caseSensitive : boolean) : void;
     
     export function loadHTTP(url : string, callback : Callback<string>) : void;
-    export function loadFile(file : string, callback : Callback<Graph>, metadata : ObjectMap, caseSensitive : boolean) : void;
+    export function loadFile(file : string, callback : Callback<Graph>, metadata : { [key : string] : any }, caseSensitive : boolean) : void;
 
-    export function equivalent(a : any, b : any, options : Object) : boolean;
-    export function mergeResolveTheirsNaive(base : Graph, to : Graph) : Graph;
+    export function equivalent(a : any, b : any, options : { [key : string] : any }) : boolean;
+    export function mergeResolveTheirsNaive(base : Graph, to : Graph) : void;
 
 }
