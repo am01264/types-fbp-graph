@@ -6,48 +6,62 @@ declare module "fbp-graph/lib/graph" {
     type Callback<T> = (err? : Error | null, result? : T) => void;
 
     export class Graph extends EventEmitter {
-        getPortName( port : string ) : string;
-        startTransaction(id : any, metadata : ObjectMap) : boolean;            
-        endTransaction(id : any, metadata : ObjectMap) : boolean;
-
-        checkTransactionStart() : boolean;
-        checkTransactionEnd() : boolean;
-
-        setProperties(properties : Object) : boolean;
         
-        addInport(publicPort : string, nodeKey : string, portKey : string, metadata : Object) : boolean;
-        removeInport(publicPort : string) : boolean;
-        renameInport(oldPort : string, newPort : string) : boolean
-        setInportMetadata(publicPort : string, metadata : Object) : boolean
+        name : string;
+        caseSensitive : boolean;
+        properties : Graph.PropertyMap;
+        nodes : Graph.Node[];
+        edges : Graph.Edge[];
+        initializers : Graph.Initializer[];
+        inports : { [key : string] : Graph.Port };
+        outports : { [key : string] : Graph.Port };
+        groups : Graph.Group[];
+        transaction : { id : Graph.TransactionID | null, depth : number }
 
-        addOutport(publicPort : string, nodeKey : string, portKey : string, metadata : Object) : boolean;
-        removeOutport(publicPort : string) : boolean;
-        renameOutport(oldPort : string, newPort : string) : boolean;
-        setOutportMetadata(publicPort : string, metadata : Object) : boolean;
+        constructor(name : string, options? : Graph.ConstructorOptions);
 
-        addGroup(group : string, nodes : Graph.Node[], metadata : Object) : boolean;
-        renameGroup(oldName : string, newName : string) : boolean;
-        removeGroup(groupName : string) : boolean;
-        setGroupMetadata(groupName : string, metadata : Object) : boolean;
+        getPortName( port : string ) : string;
+        startTransaction(id : Graph.TransactionID, metadata : Graph.TransactionMetadata) : void;            
+        endTransaction(id : Graph.TransactionID, metadata : Graph.TransactionMetadata) : void;
 
-        addNode(id : string, component : Component, metadata : Object) : Graph.Node
-        removeNode(id : string) : boolean;
+        checkTransactionStart() : void;
+        checkTransactionEnd() : void;
+
+        setProperties(properties : Graph.PropertyMap) : void;
+        
+        addInport(publicPort : string, nodeKey : Graph.NodeID, portKey : Graph.PortID, metadata : Graph.NodeMetadata) : void;
+        removeInport(publicPort : string) : void;
+        renameInport(oldPort : string, newPort : string) : void;
+        setInportMetadata(publicPort : string, metadata : Graph.NodeMetadata) : void;
+
+        addOutport(publicPort : string, nodeKey : Graph.NodeID, portKey : Graph.PortID, metadata : Graph.NodeMetadata) : void;
+        removeOutport(publicPort : string) : void;
+        renameOutport(oldPort : string, newPort : string) : void;
+        setOutportMetadata(publicPort : string, metadata : Graph.NodeMetadata) : void;
+
+        addGroup(group : string, nodes : Graph.Node[], metadata : Graph.GroupMetadata) : void;
+        renameGroup(oldName : string, newName : string) : void;
+        removeGroup(groupName : string) : void;
+        setGroupMetadata(groupName : string, metadata : Graph.GroupMetadata) : void;
+
+        addNode(id : string, component : Component, metadata : Graph.NodeMetadata) : Graph.Node
+        removeNode(id : string) : void;
         getNode(id : string) : Graph.Node | null;
-        renameNode(oldId : string, newId : string) : boolean;
-        setNodeMetadata(id : string, metadata : Object) : boolean;
+        renameNode(oldId : string, newId : string) : void;
+        setNodeMetadata(id : string, metadata : Graph.NodeMetadata) : void;
     
-        addEdge(outNode : Graph.Node, outPort : string, inNode : Graph.Node, inPort : string, metadata : Object) : Graph.Edge;
-        addEdgeIndex(outNode : Graph.Node, outPort : string, outIndex : number, inNode : Graph.Node, inPort : string, inIndex : number, metadata : Object) : Graph.Edge;
-        removeEdge(node : Graph.Node, port : string, node2 : Graph.Node, port2 : string) : boolean;
-        getEdge(node : Graph.Node, port : string, node2 : Graph.Node, port2 : string) : Graph.Edge;
-        setEdgeMetadata(node : Graph.Node, port : string, node2 : Graph.Node, port2 : string, metadata : Object) : boolean;
+        addEdge(outNode : Graph.NodeID, outPort : Graph.PortID, inNode : Graph.NodeID, inPort : Graph.PortID, metadata : Graph.EdgeMetadata) : Graph.Edge;
+        addEdgeIndex(outNode : Graph.NodeID, outPort : Graph.PortID, outIndex : number, inNode : Graph.NodeID, inPort : Graph.PortID, inIndex : number, metadata : Graph.EdgeMetadata) : Graph.Edge;
+        removeEdge(node : Graph.NodeID, port : Graph.PortID, node2 : Graph.NodeID, port2 : string) : void;
+        getEdge(node : Graph.NodeID, port : Graph.PortID, node2 : Graph.NodeID, port2 : Graph.PortID) : Graph.Edge;
+        setEdgeMetadata(node : Graph.NodeID, port : Graph.PortID, node2 : Graph.NodeID, port2 : Graph.PortID, metadata : Graph.EdgeMetadata) : void;
 
-        addInitial(data : any, node : Graph.Node, port : string, metadata : Object) : Graph.Initializer;
-        addInitialIndex(data : any, node : Graph.Node, port : string, index : number | string, metadata : Object) : Graph.Initializer;
-        addGraphInitial(data : any, node : Graph.Node, metadata : Object) : Graph.Initializer;
-        addGraphInitialIndex(data : any, node : Graph.Node, index : number | string, metadata : Object) : Graph.Initializer;
-        removeInitial(node : Graph.Node, port : string) : boolean;
-        removeGraphInitial(node : Graph.Node) : boolean;
+        addInitial(data : any, node : Graph.NodeID, port : Graph.PortID, metadata : Graph.InitializerMetadata) : Graph.Initializer;
+        addInitialIndex(data : any, node : Graph.NodeID, port : Graph.PortID, index : number | string, metadata : Graph.InitializerMetadata) : Graph.Initializer;
+        addGraphInitial(data : any, node : Graph.NodeID, metadata : Graph.InitializerMetadata) : Graph.Initializer;
+        addGraphInitialIndex(data : any, node : Graph.NodeID, index : number | string, metadata : Graph.InitializerMetadata) : Graph.Initializer;
+        removeInitial(node : Graph.Node, port : Graph.PortID) : void;
+        removeGraphInitial(node : Graph.Node) : void;
 
         toDOT() : string;
         toYUML() : string;
@@ -71,40 +85,55 @@ declare module "fbp-graph/lib/graph" {
         
         on( event : 'changeProperties', listener: (newProps : ObjectMap, oldProps : ObjectMap) => void) : this;
         
-        on( event : 'addGroup', listener: (group : Graph.EventGroupData) => void) : this;
-        on( event : 'renameGroup', listener: (group : Graph.EventGroupData) => void) : this;
-        on( event : 'removeGroup', listener: (group : Graph.EventGroupData) => void) : this;
-        on( event : 'changeGroup', listener: (group : Graph.EventGroupData, oldMeta) => void) : this;
+        on( event : 'addGroup', listener: (group : Graph.Group) => void) : this;
+        on( event : 'renameGroup', listener: (oldName : string, newName : string) => void) : this;
+        on( event : 'removeGroup', listener: (group : Graph.Group) => void) : this;
+        on( event : 'changeGroup', listener: (group : Graph.Group, before : Graph.Group, metadata : Graph.GroupMetadata) => void) : this;
 
-        on( event : 'addExport', listener : (exported) => void) : this;
-        on( event : 'removeExport', listener : (exported) => void) : this;
-    
-        
 
-        on( event : 'addInport', listener : (name : string, port :  Graph.EventPortData) => void) : this;
-        on( event : 'removeInport', listener : (name : string, port : Graph.EventPortData) => void) : this;
-        on( event : 'renameInport', listener : (oldId : string, newId : string) => void) : this;
-        on( event : 'changeInport', listener : (name : string, port : Graph.EventPortData, oldMeta : ObjectMap) => void) : this;
+        on( event : 'addInport', listener : (name : Graph.PortID, port :  Graph.EventPortData) => void) : this;
+        on( event : 'removeInport', listener : (name : Graph.PortID, port : Graph.EventPortData) => void) : this;
+        on( event : 'renameInport', listener : (oldId : Graph.PortID, newId : Graph.PortID) => void) : this;
+        on( event : 'changeInport', listener : (name : Graph.PortID, port : Graph.EventPortData, before : Graph.PortMetadata, metadata : Graph.PortMetadata) => void) : this;
         
-        on( event : 'addOutport', listener : (name : string, port : Graph.EventPortData) => void) : this;
-        on( event : 'removeOutport', listener : (name : string, port : Graph.EventPortData) => void) : this;
-        on( event : 'renameOutport', listener : (oldId : string, newId : string) => void) : this;
-        on( event : 'changeOutport', listener : (name : string, port : Graph.EventPortData, oldMeta : ObjectMap) => void) : this;
+        on( event : 'addOutport', listener : (name : Graph.PortID, port : Graph.EventPortData) => void) : this;
+        on( event : 'removeOutport', listener : (name : Graph.PortID, port : Graph.EventPortData) => void) : this;
+        on( event : 'renameOutport', listener : (oldId : Graph.PortID, newId : Graph.PortID) => void) : this;
+        on( event : 'changeOutport', listener : (name : Graph.PortID, port : Graph.EventPortData, before : Graph.PortMetadata, metadata : Graph.PortMetadata) => void) : this;
     
-        on( event : 'startTransaction', listener : (id : string, meta : ObjectMap) => void) : this;
-        on( event : 'endTransaction', listener : (id : string, meta : ObjectMap) => void) : this;
+        on( event : 'startTransaction', listener : (id : Graph.TransactionID, meta : Graph.TransactionMetadata) => void) : this;
+        on( event : 'endTransaction', listener : (id : Graph.TransactionID, meta : Graph.TransactionMetadata) => void) : this;
 
     }
 
     namespace Graph {
-        type ConstructorOptions = Object;
 
-        interface Node {
-            id : string;
-            component : Component;
-            metadata : Object
+        interface ConstructorOptions {
+            caseSensitive : boolean;
         }
 
+        type TransactionID = string;
+        type TransactionMetadata = any;
+
+        type PropertyMap = { [key : string] : any };
+
+        type PortID = string;
+        type PortMetadata = ObjectMap;
+        interface Port {
+            process : Component;
+            port: PortID;
+            metadata: PortMetadata;
+        }
+
+        type NodeID = string;
+        type NodeMetadata = ObjectMap;
+        interface Node {
+            id : NodeID;
+            component : Component;
+            metadata : NodeMetadata;
+        }
+
+        type EdgeMetadata = ObjectMap;
         interface Edge {
             from: {
                 node: Node;
@@ -114,9 +143,10 @@ declare module "fbp-graph/lib/graph" {
                 node: Node;
                 port: string;
             };
-            metadata: ObjectMap;
+            metadata: EdgeMetadata;
         }
 
+        type InitializerMetadata = EdgeMetadata;
         interface Initializer {
             from: {
                 data: any;
@@ -125,21 +155,22 @@ declare module "fbp-graph/lib/graph" {
                 node: Node;
                 port: string;
             };
-            metadata: ObjectMap;
+            metadata: InitializerMetadata;
         }
 
         interface EventPortData {
             // TODO: Link up this with the correct typings
             process : Component;
-            port : string;
-            metadata : ObjectMap
+            port : PortID;
+            metadata : PortMetadata
         }
     
-        interface EventGroupData {
+        type GroupMetadata = ObjectMap;
+        interface Group {
             // TODO: Rename to something more appropriate
             name : string,
-            nodes : Component[],
-            metadata : ObjectMap
+            nodes : Node[],
+            metadata : GroupMetadata
         }
     }
 
