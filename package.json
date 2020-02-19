@@ -1,6 +1,6 @@
 {
   "name": "types-fbp-graph",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "TypeScript type declarations for `fbp-graph`",
   "main": "",
   "types": "index.d.ts",
