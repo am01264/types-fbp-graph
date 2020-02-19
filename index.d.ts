@@ -1,3 +1,6 @@
+/// <reference path="lib/graph.d.ts" />
+/// <reference path="lib/journal.d.ts" />
+
 declare module "fbp-graph" {
     
     import * as graph from "fbp-graph/lib/graph"    
