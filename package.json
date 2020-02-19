@@ -1,0 +1,11 @@
+{
+  "name": "types-fbp-graph",
+  "version": "0.4.0",
+  "description": "TypeScript type declarations for `fbp-graph`",
+  "main": "",
+  "types": "index.d.ts",
+  "repository": "https://github.com/am01264/types-fbp-graph",
+  "author": "Andrew McAuley <am01264@users.noreply.github.com>",
+  "license": "MIT",
+  "private": false
+}
