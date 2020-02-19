@@ -3,7 +3,7 @@
   "version": "0.4.2",
   "description": "TypeScript type declarations for `fbp-graph`",
   "main": "",
-  "types": "index.d.ts",
+  "types": "fbp-graph/index.d.ts",
   "repository": "https://github.com/am01264/types-fbp-graph",
   "author": "Andrew McAuley <am01264@users.noreply.github.com>",
   "license": "MIT",
