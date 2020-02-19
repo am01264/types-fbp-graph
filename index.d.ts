@@ -1,5 +1,5 @@
-/// <reference path="lib/graph.d.ts" />
-/// <reference path="lib/journal.d.ts" />
+/// <reference path="graph.d.ts" />
+/// <reference path="journal.d.ts" />
 
 declare module "fbp-graph" {
     

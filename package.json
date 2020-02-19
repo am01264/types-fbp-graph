@@ -7,5 +7,9 @@
   "repository": "https://github.com/am01264/types-fbp-graph",
   "author": "Andrew McAuley <am01264@users.noreply.github.com>",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "dependencies": {
+    "@types/node": "^13.7.2",
+    "types-noflo": "^1.1.3"
+  }
 }
