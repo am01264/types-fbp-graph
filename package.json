@@ -10,6 +10,6 @@
   "private": false,
   "dependencies": {
     "@types/node": "^13.7.2",
-    "types-noflo": "^1.1.3"
+    "types-noflo": "^1.1.7"
   }
 }
